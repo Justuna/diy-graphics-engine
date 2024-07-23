@@ -1,5 +1,6 @@
 use std::{error::Error};
 use glfw::{Action, Context, Key};
+use gl;
 pub mod app;
 
 pub fn run() -> Result<(), Box<dyn Error>>
@@ -16,6 +17,12 @@ pub fn run() -> Result<(), Box<dyn Error>>
     window.set_key_polling(true);
     window.make_current();
 
+    gl::load_with(|s| glfw.get_proc_address_raw(s));
+
+    unsafe {
+        gl::ClearColor(0.3, 0.3, 0.5, 1.0);
+    }
+
     while !window.should_close() {
         glfw.poll_events();
         for (_, event) in glfw::flush_messages(&events) {
@@ -24,6 +31,12 @@ pub fn run() -> Result<(), Box<dyn Error>>
                 _ => {},
             }
         }
+
+        unsafe {
+            gl::Clear(gl::COLOR_BUFFER_BIT);
+        }
+
+        window.swap_buffers();
     }
     
     return Ok(());
