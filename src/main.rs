@@ -1,5 +1,12 @@
-use diy_graphics_engine::run;
+use diy_graphics_engine::app;
 
 fn main() {
-    println!("Run finished: {:#?}", run());
+    match app::run() {
+        Ok(_) => {
+            println!("Exited successfully!");
+        },
+        Err(_error) => {
+            println!("Something went wrong:\n\n\t{}\n", _error);
+        }
+    }
 }
