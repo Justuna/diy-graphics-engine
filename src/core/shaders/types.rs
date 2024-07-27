@@ -137,6 +137,10 @@ impl ShaderProgram
             gl::GetProgramInterfaceiv(id, gl::PROGRAM_INPUT, gl::ACTIVE_RESOURCES, &mut n_attributes);
             gl::GetProgramInterfaceiv(id, gl::UNIFORM, gl::ACTIVE_RESOURCES, &mut n_uniforms);
 
+            // An experiment into getting information on shader inputs
+            // Maybe someday I'll actually build out an editor for changing shader inputs in the app
+            // But for now, I'm probably going to hard-code everything
+
             for i in 0..n_attributes
             {
                 let props = [gl::NAME_LENGTH, gl::TYPE, gl::ARRAY_SIZE];
