@@ -43,11 +43,12 @@ pub fn run() -> anyhow::Result<()>
 
         let vertices: Vec<f32> = vec!
         [
-            0.5, 0.5, 0.0,
-            0.5, -0.5, 0.0,
-            -0.5, 0.5, 0.0,
-            -0.5, -0.5, 0.0,
+            0.5, 0.5, 0.0,      1.0, 0.0, 0.0,
+            0.5, -0.5, 0.0,     0.0, 1.0, 0.0,
+            -0.5, 0.5, 0.0,     0.0, 0.0, 1.0, 
+            -0.5, -0.5, 0.0,    1.0, 0.0, 0.0,
         ];
+
         let indices: Vec<u32> = vec!
         [
             0, 1, 2,
@@ -83,15 +84,27 @@ pub fn run() -> anyhow::Result<()>
         );
 
         // Declares how the current VBO should be read
+        // Position
         gl::VertexAttribPointer(
             0,
             3,
             gl::FLOAT, 
             gl::FALSE, 
-            (std::mem::size_of::<f32>() * 3) as i32, 
+            (std::mem::size_of::<f32>() * 6) as i32, 
             0 as *const gl::types::GLvoid
         );
         gl::EnableVertexAttribArray(0);
+
+        // Vertex color
+        gl::VertexAttribPointer(
+            1,
+            3,
+            gl::FLOAT, 
+            gl::FALSE, 
+            (std::mem::size_of::<f32>() * 6) as i32, 
+            (std::mem::size_of::<f32>() * 3) as *const gl::types::GLvoid
+        );
+        gl::EnableVertexAttribArray(1);
     }
 
     while !window.should_close() {

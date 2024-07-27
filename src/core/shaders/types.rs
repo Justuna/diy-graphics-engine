@@ -141,6 +141,8 @@ impl ShaderProgram
             // Maybe someday I'll actually build out an editor for changing shader inputs in the app
             // But for now, I'm probably going to hard-code everything
 
+            println!("New program compiled!\n");
+            println!("Inputs:");
             for i in 0..n_attributes
             {
                 let props = [gl::NAME_LENGTH, gl::TYPE, gl::ARRAY_SIZE];
@@ -167,12 +169,11 @@ impl ShaderProgram
                 );
 
                 let name = buffer.to_string_lossy().into_owned();
-                println!("New program compiled!\n");
-                println!("Inputs:");
                 println!("Name: {name}");
-                println!("\n");
             }
+            println!("\n");
 
+            println!("Uniforms:");
             for i in 0..n_uniforms
             {
                 let props = [gl::NAME_LENGTH, gl::TYPE, gl::ARRAY_SIZE];
@@ -199,10 +200,10 @@ impl ShaderProgram
                 );
 
                 let name = buffer.to_string_lossy().into_owned();
-                println!("Uniforms:");
+                
                 println!("Name: {name}");
-                println!("\n");
             }
+            println!("\n");
         }
 
         return Ok
