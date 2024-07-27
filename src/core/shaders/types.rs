@@ -1,5 +1,7 @@
 use std::{ffi::CString, marker::PhantomData};
 
+use crate::core::utils;
+
 use super::errors::{get_shader_error, get_shader_program_error};
 
 pub trait ShaderType 
@@ -126,6 +128,77 @@ impl ShaderProgram
         if success == 0 
         {
             return Err(get_shader_program_error(id));
+        }
+
+        unsafe 
+        {
+            let mut n_attributes = 0;
+            let mut n_uniforms = 0;
+            gl::GetProgramInterfaceiv(id, gl::PROGRAM_INPUT, gl::ACTIVE_RESOURCES, &mut n_attributes);
+            gl::GetProgramInterfaceiv(id, gl::UNIFORM, gl::ACTIVE_RESOURCES, &mut n_uniforms);
+
+            for i in 0..n_attributes
+            {
+                let props = [gl::NAME_LENGTH, gl::TYPE, gl::ARRAY_SIZE];
+                let mut params = [0, 0, 0];
+                gl::GetProgramResourceiv(
+                    id, 
+                    gl::PROGRAM_INPUT, 
+                    i as u32, 
+                    props.len() as i32, 
+                    props.as_ptr(), 
+                    params.len() as i32, 
+                    std::ptr::null_mut(), 
+                    params.as_mut_ptr()
+                );
+
+                let mut buffer = utils::empty_cstring(params[0] as usize);
+                gl::GetProgramResourceName(
+                    id, 
+                    gl::PROGRAM_INPUT, 
+                    i as u32, 
+                    params[0], 
+                    std::ptr::null_mut(), 
+                    buffer.as_ptr() as *mut gl::types::GLchar
+                );
+
+                let name = buffer.to_string_lossy().into_owned();
+                println!("New program compiled!\n");
+                println!("Inputs:");
+                println!("Name: {name}");
+                println!("\n");
+            }
+
+            for i in 0..n_uniforms
+            {
+                let props = [gl::NAME_LENGTH, gl::TYPE, gl::ARRAY_SIZE];
+                let mut params = [0, 0, 0];
+                gl::GetProgramResourceiv(
+                    id, 
+                    gl::UNIFORM, 
+                    i as u32, 
+                    props.len() as i32, 
+                    props.as_ptr(), 
+                    params.len() as i32, 
+                    std::ptr::null_mut(), 
+                    params.as_mut_ptr()
+                );
+
+                let mut buffer = utils::empty_cstring(params[0] as usize);
+                gl::GetProgramResourceName(
+                    id, 
+                    gl::UNIFORM, 
+                    i as u32, 
+                    params[0], 
+                    std::ptr::null_mut(), 
+                    buffer.as_ptr() as *mut gl::types::GLchar
+                );
+
+                let name = buffer.to_string_lossy().into_owned();
+                println!("Uniforms:");
+                println!("Name: {name}");
+                println!("\n");
+            }
         }
 
         return Ok
